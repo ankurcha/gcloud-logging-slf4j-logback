@@ -58,7 +58,10 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
         // add the rest of the fields for the json payload
         log.put("serviceContext", getServiceContext());
         log.put("message", getMessage(event));
-        log.put("context", getContext(event));
+        Map<String, Object> context = getContext(event);
+        if (!context.isEmpty()) {
+            log.put("context", context);
+        }
         return log;
     }
 
@@ -95,8 +98,8 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
 
     static Map<String, Object> getReportLocation(ILoggingEvent event) {
         Map<String, Object> reportLocation = new HashMap<>();
-        if (event.hasCallerData()) {
-            StackTraceElement callerData = event.getCallerData()[0];
+        StackTraceElement callerData = event.getCallerData()[0];
+        if (callerData != null) {
             reportLocation.put("filePath", callerData.getClassName().replace('.', '/') + ".class");
             reportLocation.put("lineNumber", callerData.getLineNumber());
             reportLocation.put("functionName", callerData.getClassName() + "." + callerData.getMethodName());

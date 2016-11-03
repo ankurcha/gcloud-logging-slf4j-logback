@@ -69,6 +69,18 @@ Add entry to `logback.xml`
 
 ```
 
+Example log line:
+
+```json
+{"log":{
+    "severity":"WARNING",
+    "context":{},
+    "time":{"seconds":1478197468,"nanos":379000000},
+    "serviceContext":{"version":"c8a586a45a090516adf5cd79505179a6925da5db","service":"ferric"},
+    "message":"unable to list streaming_stable view to start materialization jobs\nio.grpc.StatusRuntimeException: UNAVAILABLE: Channel in TRANSIENT_FAILURE state\nCaused by: io.grpc.StatusRuntimeException: UNAVAILABLE\nCaused by: java.net.ConnectException: Connection refused: contra/0:0:0:0:0:0:0:1:443\n"}}
+
+```
+
 ## TODO
 
 * [x] Update in readme
