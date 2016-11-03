@@ -24,7 +24,7 @@ allprojects {
 
 dependencies {
     // refer to badge for latest version
-    compile 'com.github.ankurcha:gcloud-logging-slf4j-logback:v1.0.0'
+    compile 'com.github.ankurcha:gcloud-logging-slf4j-logback:LATEST'
 }
 ```
 
@@ -41,7 +41,7 @@ or to maven `pom.xml`:
 <dependency>
     <groupId>com.github.ankurcha</groupId>
 	<artifactId>gcloud-logging-slf4j-logback</artifactId>
-	<version>v1.0.0</version>
+	<version>LATEST</version>
 </dependency>
 ```
 
