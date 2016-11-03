@@ -65,5 +65,5 @@ Add entry to `logback.xml`
 
 ## TODO
 
-[x] Update in readme
-[ ] Add some tests for the formatter
+* [x] Update in readme
+* [ ] Add some tests for the formatter

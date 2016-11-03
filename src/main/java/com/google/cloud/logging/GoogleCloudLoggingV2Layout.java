@@ -12,14 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Usage instructions:
- * <appender name="gcloud-appender" class="ch.qos.logback.core.ConsoleAppender">
- *     <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
- *         <layout class="com.google.cloud.logging.GoogleCloudLoggingV2Layout">
- *             <jsonFormatter class="com.google.cloud.logging.GSONJsonFormatter"/>
- *         </layout>
- *     </encoder>
- *  </appender>
+ * Google cloud logging v2 json layout
  */
 public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
     private static final DateTimeFormatter TIMESTAMP_FORMATTER = ISODateTimeFormat.dateTime();
