@@ -73,24 +73,24 @@ Example log line (prettified here):
 
 ```json
 {
-   "log":{
-      "severity":"INFO",
-      "context":{
-         "reportLocation":{
-            "functionName":"org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler",
-            "filePath":"org/springframework/web/servlet/handler/AbstractUrlHandlerMapping.class",
-            "lineNumber":354
-         }
-      },
-      "time":{
-         "seconds":1478198449,
-         "nanos":186000000
-      },
-      "serviceContext":{
-         "version":"c8a586a45a090516adf5cd79505179a6925da5db",
-         "service":"ferric"
-      },
-      "message":"Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]"
+   "severity":"INFO",
+   "context":{
+      "reportLocation":{
+         "functionName":"org.springframework.web.servlet.FrameworkServlet.initServletBean",
+         "filePath":"org/springframework/web/servlet/FrameworkServlet.class",
+         "logger":"org.springframework.web.servlet.DispatcherServlet",
+         "thread":"http-nio-8080-exec-1",
+         "lineNumber":508
+      }
+   },
+   "serviceContext":{
+      "version":"dc23b8d342e95b48a80219a2af67388b1c1a52d0",
+      "service":"ferric"
+   },
+   "message":"FrameworkServlet \u0027dispatcherServlet\u0027: initialization completed in 27 ms",
+   "timestamp":{
+      "seconds":1478201184,
+      "nanos":753000000
    }
 }
 ```
