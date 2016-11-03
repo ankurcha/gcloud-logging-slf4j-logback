@@ -44,18 +44,18 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
 
     @Override
     protected Map toJsonMap(ILoggingEvent event) {
-        Map<String, Object> log = new HashMap<>();
-        log.put("time", getTime(event));
-        log.put("severity", getSeverity(event));
+        Map<Object, Object> builder = new HashMap<>(2);
+        builder.put("severity", getSeverity(event));
+        builder.put("timestamp", getTime(event));
 
-        // add the rest of the fields for the json payload
-        log.put("serviceContext", getServiceContext());
-        log.put("message", getMessage(event));
+        // message fields
+        builder.put("serviceContext", getServiceContext());
+        builder.put("message", getMessage(event));
         Map<String, Object> context = getContext(event);
         if (!context.isEmpty()) {
-            log.put("context", context);
+            builder.put("context", context);
         }
-        return log;
+        return builder;
     }
 
     private Map<String, String> _serviceContext;
@@ -97,7 +97,8 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
             reportLocation.put("lineNumber", callerData.getLineNumber());
             reportLocation.put("functionName", callerData.getClassName() + "." + callerData.getMethodName());
         }
-
+        reportLocation.put("thread", event.getThreadName());
+        reportLocation.put("logger", event.getLoggerName());
         return reportLocation;
     }
 
