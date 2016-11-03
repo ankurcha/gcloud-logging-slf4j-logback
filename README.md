@@ -69,16 +69,30 @@ Add entry to `logback.xml`
 
 ```
 
-Example log line:
+Example log line (prettified here):
 
 ```json
-{"log":{
-    "severity":"WARNING",
-    "context":{},
-    "time":{"seconds":1478197468,"nanos":379000000},
-    "serviceContext":{"version":"c8a586a45a090516adf5cd79505179a6925da5db","service":"ferric"},
-    "message":"unable to list streaming_stable view to start materialization jobs\nio.grpc.StatusRuntimeException: UNAVAILABLE: Channel in TRANSIENT_FAILURE state\nCaused by: io.grpc.StatusRuntimeException: UNAVAILABLE\nCaused by: java.net.ConnectException: Connection refused: contra/0:0:0:0:0:0:0:1:443\n"}}
-
+{
+   "log":{
+      "severity":"INFO",
+      "context":{
+         "reportLocation":{
+            "functionName":"org.springframework.web.servlet.handler.AbstractUrlHandlerMapping.registerHandler",
+            "filePath":"org/springframework/web/servlet/handler/AbstractUrlHandlerMapping.class",
+            "lineNumber":354
+         }
+      },
+      "time":{
+         "seconds":1478198449,
+         "nanos":186000000
+      },
+      "serviceContext":{
+         "version":"c8a586a45a090516adf5cd79505179a6925da5db",
+         "service":"ferric"
+      },
+      "message":"Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]"
+   }
+}
 ```
 
 ## TODO
