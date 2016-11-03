@@ -44,13 +44,6 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
 
     @Override
     protected Map toJsonMap(ILoggingEvent event) {
-        Map<Object, Object> builder = new HashMap<>(1);
-        builder.put("log", buildLog(event));
-        return builder;
-    }
-
-
-    Map<String, Object> buildLog(ILoggingEvent event) {
         Map<String, Object> log = new HashMap<>();
         log.put("time", getTime(event));
         log.put("severity", getSeverity(event));
