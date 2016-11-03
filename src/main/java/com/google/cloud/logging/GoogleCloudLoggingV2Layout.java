@@ -14,16 +14,32 @@ import java.util.Map;
  */
 public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
     private static final ThrowableProxyConverter throwableProxyConverter = new ThrowableProxyConverter();
-    private Map<String, String> serviceContext;
+    private String serviceName;
+    private String serviceVersion;
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getServiceVersion() {
+        return serviceVersion;
+    }
+
+    public void setServiceVersion(String serviceVersion) {
+        this.serviceVersion = serviceVersion;
+    }
 
     public GoogleCloudLoggingV2Layout() {
         this("default", "default");
     }
 
     public GoogleCloudLoggingV2Layout(String serviceName, String serviceVersion) {
-        this.serviceContext = new HashMap<>();
-        this.serviceContext.put("service", serviceName);
-        this.serviceContext.put("version", serviceVersion);
+        this.serviceName = serviceName;
+        this.serviceVersion = serviceVersion;
     }
 
     @Override
@@ -40,10 +56,21 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
         log.put("severity", getSeverity(event));
 
         // add the rest of the fields for the json payload
-        log.put("serviceContext", this.serviceContext);
+        log.put("serviceContext", getServiceContext());
         log.put("message", getMessage(event));
         log.put("context", getContext(event));
         return log;
+    }
+
+    private Map<String, String> _serviceContext;
+    Map<String, String> getServiceContext() {
+        if(_serviceContext == null) {
+            Map<String, String> serviceContext = new HashMap<>(2);
+            serviceContext.put("service", serviceName);
+            serviceContext.put("version", serviceVersion);
+            _serviceContext = serviceContext;
+        }
+        return this._serviceContext;
     }
 
     static String getMessage(ILoggingEvent event) {

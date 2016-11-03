@@ -53,14 +53,20 @@ Add entry to `logback.xml`
     <appender name="KUBE_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="com.google.cloud.logging.GoogleCloudLoggingV2Layout">
-                <jsonFormatter class="com.google.cloud.logginglogging.GSONJsonFormatter"/>
+                <appendLineSeparator>true</appendLineSeparator>
+                <serviceName>@service-name@</serviceName>
+                <serviceVersion>@git.sha@</serviceVersion>
+                <jsonFormatter class="com.google.cloud.logging.GSONJsonFormatter"/>
             </layout>
         </encoder>
     </appender>
+
     <root level="info">
         <appender-ref ref="KUBE_CONSOLE"/>
     </root>
+
 </configuration>
+
 ```
 
 ## TODO
