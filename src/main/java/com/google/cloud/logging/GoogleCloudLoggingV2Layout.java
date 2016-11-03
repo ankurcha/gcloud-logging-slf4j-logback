@@ -16,6 +16,10 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
     private static final ThrowableProxyConverter throwableProxyConverter = new ThrowableProxyConverter();
     private Map<String, String> serviceContext;
 
+    public GoogleCloudLoggingV2Layout() {
+        this("default", "default");
+    }
+
     public GoogleCloudLoggingV2Layout(String serviceName, String serviceVersion) {
         this.serviceContext = new HashMap<>();
         this.serviceContext.put("service", serviceName);
