@@ -1,0 +1,16 @@
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'joda-time:joda-time:2.9.4'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'ch.qos.logback:logback-classic:1.1.7'
+    compile 'ch.qos.logback.contrib:logback-json-core:0.1.5'
+    compile 'org.slf4j:slf4j-api:1.7.21'
+
+    testCompile 'junit:junit:4.12'
+}
