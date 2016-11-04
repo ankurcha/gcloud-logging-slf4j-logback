@@ -1,11 +1,13 @@
 plugins {
-    id "com.github.hierynomus.license" version "0.13.1"
+    id 'com.github.hierynomus.license' version '0.13.1'
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'signing'
 
-group = 'com.google.cloud.logging'
+group = 'com.github.ankurcha'
+archivesBaseName='gcloud-logging-slf4j-logback'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -53,4 +55,8 @@ install {
             }
         }
     }
+}
+
+signing {
+    sign configurations.archives
 }
