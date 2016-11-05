@@ -21,6 +21,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.contrib.json.JsonLayoutBase;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ import java.util.Map;
  * Google cloud logging v2 json layout
  */
 public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
-    private static final ThrowableProxyConverter throwableProxyConverter = new ThrowableProxyConverter();
+    private final ThrowableProxyConverter tpc;
     private String serviceName;
     private String serviceVersion;
 
@@ -55,6 +56,20 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
     public GoogleCloudLoggingV2Layout(String serviceName, String serviceVersion) {
         this.serviceName = serviceName;
         this.serviceVersion = serviceVersion;
+        tpc = new ThrowableProxyConverter();
+        tpc.setOptionList(Collections.singletonList("full"));
+    }
+
+    @Override
+    public void start() {
+        tpc.start();
+        super.start();
+    }
+
+    @Override
+    public void stop() {
+        tpc.stop();
+        super.stop();
     }
 
     @Override
@@ -84,13 +99,13 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
         return this._serviceContext;
     }
 
-    static String getMessage(ILoggingEvent event) {
+    String getMessage(ILoggingEvent event) {
         String message = event.getFormattedMessage();
 
         // add exception if there is one
-        String stackTrace = throwableProxyConverter.convert(event);
+        String stackTrace = tpc.convert(event);
         if (!isNullOrEmpty(stackTrace)) {
-            return message + "\n" + throwableProxyConverter.convert(event);
+            return message + "\n" + stackTrace;
         }
         return message;
     }
