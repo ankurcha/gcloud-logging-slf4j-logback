@@ -6,9 +6,6 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-group = 'com.github.ankurcha'
-archivesBaseName='gcloud-logging-slf4j-logback'
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -18,11 +15,11 @@ repositories {
 }
 
 dependencies {
-    compile 'joda-time:joda-time:2.9.4'
+    compile 'joda-time:joda-time:2.9.7'
     compile 'com.google.code.gson:gson:2.8.0'
-    compile 'ch.qos.logback:logback-classic:1.1.7'
+    compile 'ch.qos.logback:logback-classic:1.1.10'
     compile 'ch.qos.logback.contrib:logback-json-core:0.1.5'
-    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'org.slf4j:slf4j-api:1.7.22'
 
     testCompile 'junit:junit:4.12'
 }
