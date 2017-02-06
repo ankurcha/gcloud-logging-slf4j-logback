@@ -52,15 +52,15 @@ uploadArchives {
       }
 
       pom.project {
-        name 'gcloud-logging json log appender for sl4j + logback'
-        packaging 'jar'
+        name 'gcloud-logging-slf4j-logback'
         description 'gcloud-logging json log appender for sl4j + logback'
+        packaging 'jar'
         url 'https://github.com/ankurcha/gcloud-logging-slf4j-logback'
 
         scm {
-          connection 'scm:git:git@github.com:ankurcha/gcloud-logging-slf4j-logback.git'
-          developerConnection 'scm:git:git@github.com:ankurcha/gcloud-logging-slf4j-logback.git'
-          url 'https://github.com/ankurcha/gcloud-logging-slf4j-logback'
+          connection 'scm:git@github.com:ankurcha/gcloud-logging-slf4j-logback.git'
+          developerConnection 'scm:git@github.com:ankurcha/gcloud-logging-slf4j-logback.git'
+          url 'scm:git@github.com:ankurcha/gcloud-logging-slf4j-logback.git'
         }
 
         licenses {
