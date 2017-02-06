@@ -32,13 +32,6 @@ dependencies {
 or to maven `pom.xml`:
 
 ```xml
-<repositories>
-    <repository>
-	    <id>jitpack.io</id>
-		<url>https://jitpack.io</url>
-	</repository>
-</repositories>
-
 <dependency>
     <groupId>com.github.ankurcha</groupId>
 	<artifactId>gcloud-logging-slf4j-logback</artifactId>
