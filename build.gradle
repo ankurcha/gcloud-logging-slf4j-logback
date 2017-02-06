@@ -4,6 +4,7 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'signing'
 
 group = 'com.github.ankurcha'
 archivesBaseName='gcloud-logging-slf4j-logback'
@@ -26,32 +27,64 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
 artifacts {
-    archives sourcesJar
-    archives javadocJar
+    archives javadocJar, sourcesJar
 }
 
-// To specify a license in the pom:
-install {
-    repositories.mavenInstaller {
-        pom.project {
-            licenses {
-                license {
-                    name 'The Apache Software License, Version 2.0'
-                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    distribution 'repo'
-                }
-            }
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      pom.project {
+        name 'gcloud-logging json log appender for sl4j + logback'
+        packaging 'jar'
+        description 'gcloud-logging json log appender for sl4j + logback'
+        url 'https://github.com/ankurcha/gcloud-logging-slf4j-logback'
+
+        scm {
+          connection 'scm:git:git@github.com:ankurcha/gcloud-logging-slf4j-logback.git'
+          developerConnection 'scm:git:git@github.com:ankurcha/gcloud-logging-slf4j-logback.git'
+          url 'https://github.com/ankurcha/gcloud-logging-slf4j-logback'
         }
+
+        licenses {
+          license {
+            name 'The Apache License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+          }
+        }
+
+        developers {
+          developer {
+            id 'ankurcha'
+            name 'Ankur Chauhan'
+            email 'ankur@malloc64.com'
+          }
+        }
+      }
     }
+  }
 }
