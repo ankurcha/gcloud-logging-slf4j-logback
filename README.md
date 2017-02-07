@@ -2,6 +2,8 @@
 
 [![](https://jitpack.io/v/ankurcha/gcloud-logging-slf4j-logback.svg)](https://jitpack.io/#ankurcha/gcloud-logging-slf4j-logback)
 [![Build Status](https://travis-ci.org/ankurcha/gcloud-logging-slf4j-logback.svg?branch=master)](https://travis-ci.org/ankurcha/gcloud-logging-slf4j-logback)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.ankurcha/gcloud-logging-slf4j-logback/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.ankurcha/gcloud-logging-slf4j-logback)
+
 
 This library provides a simple json based layout that can be used to send structured logs to gcloud logging.
 
