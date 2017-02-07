@@ -7,10 +7,7 @@ buildscript {
   }
 }
 
-apply plugin: 'io.codearte.nexus-staging'
 apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -44,11 +41,15 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-signing {
-    sign configurations.archives
-}
-
+// handle release
 if (project.hasProperty('release')) {
+  apply plugin: 'maven'
+  apply plugin: 'signing'
+  apply plugin: 'io.codearte.nexus-staging'
+
+  signing {
+      sign configurations.archives
+  }
   uploadArchives {
     repositories {
       mavenDeployer {
