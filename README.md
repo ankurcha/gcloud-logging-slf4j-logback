@@ -17,12 +17,6 @@ Yes.
 Add dependency to `build.gradle`:
 
 ```groovy
-allprojects {
-    repositories {
-        maven { url "https://jitpack.io" }
-    }
-}
-
 dependencies {
     // refer to badge for latest version
     compile 'com.github.ankurcha:gcloud-logging-slf4j-logback:LATEST'
