@@ -80,7 +80,7 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
 
         // message fields
         builder.put("serviceContext", getServiceContext());
-        builder.put("message", getMessage(event));
+        builder.put("log_message", getMessage(event));
         Map<String, Object> context = getContext(event);
         if (!context.isEmpty()) {
             builder.put("context", context);
