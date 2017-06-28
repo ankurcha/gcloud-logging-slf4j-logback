@@ -83,6 +83,16 @@ Example log line (prettified here):
 }
 ```
 
+Directly reporting to the stackdriver API
+
+```groovy
+appender("CLOUD", com.google.cloud.logging.logback.JsonLoggingAppender) {
+    flushLevel = WARN
+}
+
+root(loggerLevel, ['CLOUD'])
+```
+
 ## TODO
 
 * [x] Update in readme
