@@ -72,6 +72,7 @@ public class JsonLoggingAppender extends UnsynchronizedAppenderBase<ILoggingEven
 
     /**
      * Add extra labels using classes that implement {@link LoggingEnhancer}.
+     * @param enhancerClassName class name
      */
     public void addEnhancer(String enhancerClassName) {
         this.enhancerClassNames.add(enhancerClassName);
@@ -106,7 +107,8 @@ public class JsonLoggingAppender extends UnsynchronizedAppenderBase<ILoggingEven
 
     private LoggingEnhancer getEnhancer(String enhancerClassName) {
         try {
-            Class<? extends LoggingEnhancer> clz = (Class<? extends LoggingEnhancer>) Loader.loadClass(enhancerClassName.trim());
+            Class<? extends LoggingEnhancer> clz =
+                    (Class<? extends LoggingEnhancer>) Loader.loadClass(enhancerClassName.trim());
             return clz.newInstance();
         } catch (Exception ex) {
             // If we cannot create the enhancer we fallback to null
