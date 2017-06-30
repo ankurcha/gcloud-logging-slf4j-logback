@@ -19,7 +19,7 @@ Add dependency to `build.gradle`:
 ```groovy
 dependencies {
     // refer to badge for latest version
-    compile 'com.github.ankurcha:gcloud-logging-slf4j-logback:LATEST'
+    compile 'com.github.ankurcha:google-cloud-logging-logback-slf4j:LATEST'
 }
 ```
 
@@ -28,8 +28,8 @@ or to maven `pom.xml`:
 ```xml
 <dependency>
     <groupId>com.github.ankurcha</groupId>
-	<artifactId>gcloud-logging-slf4j-logback</artifactId>
-	<version>LATEST</version>
+    <artifactId>google-cloud-logging-logback-slf4j</artifactId>
+    <version>LATEST</version>
 </dependency>
 ```
 
