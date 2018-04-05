@@ -29,9 +29,13 @@ import java.util.Map;
  * Google cloud logging v2 json layout
  */
 public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
+    private static final String TRACE_ID_FIELD_KEY = "logging.googleapis.com/trace";
+    private static final String SPAN_ID_FIELD_KEY = "logging.googleapis.com/spanId";
+
     private final ThrowableProxyConverter tpc;
     private String serviceName;
     private String serviceVersion;
+    private boolean addTraceFields;
 
     public String getServiceName() {
         return serviceName;
@@ -49,13 +53,22 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
         this.serviceVersion = serviceVersion;
     }
 
-    public GoogleCloudLoggingV2Layout() {
-        this("default", "default");
+    public boolean isAddTraceFields() {
+        return addTraceFields;
     }
 
-    public GoogleCloudLoggingV2Layout(String serviceName, String serviceVersion) {
+    public void setAddTraceFields(boolean addTraceFields) {
+        this.addTraceFields = addTraceFields;
+    }
+
+    public GoogleCloudLoggingV2Layout() {
+        this("default", "default", true);
+    }
+
+    public GoogleCloudLoggingV2Layout(String serviceName, String serviceVersion, boolean addTraceFields) {
         this.serviceName = serviceName;
         this.serviceVersion = serviceVersion;
+        this.addTraceFields = addTraceFields;
         tpc = new ThrowableProxyConverter();
         tpc.setOptionList(Collections.singletonList("full"));
     }
@@ -81,6 +94,29 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
         // message fields
         builder.put("serviceContext", getServiceContext());
         builder.put("message", getMessage(event));
+
+        // add trace fields if it is present as one of the arguments
+        if (addTraceFields) {
+            TraceContext tCtx = null;
+            for (Object arg : event.getArgumentArray()) {
+                if (arg instanceof TraceContext) {
+                    tCtx = (TraceContext) arg;
+                    break;
+                }
+            }
+
+            if (tCtx != null) {
+                // add trace fields
+                if (!isNullOrEmpty(tCtx.getTraceId())) {
+                    builder.put(TRACE_ID_FIELD_KEY, tCtx.getTraceId());
+                }
+
+                if (!isNullOrEmpty(tCtx.getSpanId())) {
+                    builder.put(SPAN_ID_FIELD_KEY, tCtx.getSpanId());
+                }
+            }
+        }
+
         Map<String, Object> context = getContext(event);
         if (!context.isEmpty()) {
             builder.put("context", context);

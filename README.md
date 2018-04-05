@@ -8,6 +8,10 @@ This library provides a simple json based layout that can be used to send struct
 This appender is particularly useful in [Google Container Engine](https://cloud.google.com/container-engine/)
 where logs should be emitted to stdout.
 
+Stackdriver fluentd plugin implementation
+
+https://github.com/GoogleCloudPlatform/fluent-plugin-google-cloud/blob/master/lib/fluent/plugin/out_google_cloud.rb
+
 ## Is this production ready?
 
 Yes.
@@ -62,6 +66,8 @@ Example log line (prettified here):
 ```json
 {
    "severity":"INFO",
+   "logging.googleapis.com/trace": "projects/<project-id>/traces/<trace_id>",
+   "logging.googleapis.com/spanId": "<span_id>",
    "context":{
       "reportLocation":{
          "functionName":"org.springframework.web.servlet.FrameworkServlet.initServletBean",
@@ -81,16 +87,6 @@ Example log line (prettified here):
       "nanos":753000000
    }
 }
-```
-
-Directly reporting to the stackdriver API
-
-```groovy
-appender("CLOUD", com.google.cloud.logging.logback.JsonLoggingAppender) {
-    flushLevel = WARN
-}
-
-root(loggerLevel, ['CLOUD'])
 ```
 
 ## TODO
