@@ -19,10 +19,10 @@ repositories {
 
 dependencies {
     compile 'joda-time:joda-time:2.9.9'
-    compile 'com.google.code.gson:gson:2.8.1'
+    compile 'com.google.code.gson:gson:2.8.2'
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'ch.qos.logback.contrib:logback-json-core:0.1.5'
-    compile 'com.google.cloud:google-cloud-logging:1.2.0'
+    compile 'com.google.cloud:google-cloud-logging:1.25.0'
     compile 'org.slf4j:slf4j-api:1.7.25'
 
     testCompile 'junit:junit:4.12'
