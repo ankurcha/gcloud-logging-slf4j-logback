@@ -89,6 +89,12 @@ Example log line (prettified here):
 }
 ```
 
+## Adding trace context (since 1.1.7)
+
+Add an argument to the log statement of type `com.google.cloud.logging.TraceContext` with trace and spanId if available.
+Trace id should be of the format: `projects/<project-id>/traces/<trace_id>` where `project-id` is the gcp project id and
+`trace_id` is the 16-character hexadecimal encoding of the trace id. Similarly for the `<span-id>`.
+
 ## TODO
 
 * [x] Update in readme
