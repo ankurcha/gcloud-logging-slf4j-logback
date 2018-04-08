@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2016 - Ankur Chauhan <ankur@malloc64.com>
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,6 +20,7 @@ import ch.qos.logback.classic.pattern.ThrowableProxyConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.contrib.json.JsonLayoutBase;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
     private String serviceName;
     private String serviceVersion;
     private boolean addTraceFields;
+    private boolean addHttpRequestFields;
 
     public String getServiceName() {
         return serviceName;
@@ -53,7 +55,7 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
         this.serviceVersion = serviceVersion;
     }
 
-    public boolean isAddTraceFields() {
+    public boolean getAddTraceFields() {
         return addTraceFields;
     }
 
@@ -61,14 +63,23 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
         this.addTraceFields = addTraceFields;
     }
 
-    public GoogleCloudLoggingV2Layout() {
-        this("default", "default", true);
+    public boolean getAddHttpRequestFields() {
+        return addHttpRequestFields;
     }
 
-    public GoogleCloudLoggingV2Layout(String serviceName, String serviceVersion, boolean addTraceFields) {
+    public void setAddHttpRequestFields(boolean addHttpRequestFields) {
+        this.addHttpRequestFields = addHttpRequestFields;
+    }
+
+    public GoogleCloudLoggingV2Layout() {
+        this("default", "default", true, true);
+    }
+
+    public GoogleCloudLoggingV2Layout(String serviceName, String serviceVersion, boolean addTraceFields, boolean addHttpRequestFields) {
         this.serviceName = serviceName;
         this.serviceVersion = serviceVersion;
         this.addTraceFields = addTraceFields;
+        this.addHttpRequestFields = addHttpRequestFields;
         tpc = new ThrowableProxyConverter();
         tpc.setOptionList(Collections.singletonList("full"));
     }
@@ -96,24 +107,34 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
         builder.put("message", getMessage(event));
 
         // add trace fields if it is present as one of the arguments
-        if (addTraceFields) {
-            TraceContext tCtx = null;
+        if (addTraceFields || addHttpRequestFields) {
+            TraceContext traceCtx = null;
+            HttpRequestContext reqCtx = null;
+
             for (Object arg : event.getArgumentArray()) {
                 if (arg instanceof TraceContext) {
-                    tCtx = (TraceContext) arg;
-                    break;
+                    traceCtx = (TraceContext) arg;
+                }
+
+                if (arg instanceof HttpRequestContext) {
+                    reqCtx = (HttpRequestContext) arg;
                 }
             }
 
-            if (tCtx != null) {
-                // add trace fields
-                if (!isNullOrEmpty(tCtx.getTraceId())) {
-                    builder.put(TRACE_ID_FIELD_KEY, tCtx.getTraceId());
+            // add trace context if present
+            if (traceCtx != null) {
+                if (!isNullOrEmpty(traceCtx.getTraceId())) {
+                    builder.put(TRACE_ID_FIELD_KEY, traceCtx.getTraceId());
                 }
 
-                if (!isNullOrEmpty(tCtx.getSpanId())) {
-                    builder.put(SPAN_ID_FIELD_KEY, tCtx.getSpanId());
+                if (!isNullOrEmpty(traceCtx.getSpanId())) {
+                    builder.put(SPAN_ID_FIELD_KEY, traceCtx.getSpanId());
                 }
+            }
+
+            // add http request if present
+            if (reqCtx != null) {
+                builder.put("httpRequest", reqCtx.getFields());
             }
         }
 
@@ -183,11 +204,11 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
 
     static String getSeverity(final ILoggingEvent event) {
         Level level = event.getLevel();
-        if (level == Level.ALL)        return "DEBUG";
+        if (level == Level.ALL) return "DEBUG";
         else if (level == Level.TRACE) return "DEBUG";
         else if (level == Level.DEBUG) return "DEBUG";
-        else if (level == Level.INFO)  return "INFO";
-        else if (level == Level.WARN)  return "WARNING";
+        else if (level == Level.INFO) return "INFO";
+        else if (level == Level.WARN) return "WARNING";
         else if (level == Level.ERROR) return "ERROR";
         else return "DEFAULT";
     }
