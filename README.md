@@ -95,6 +95,15 @@ Add an argument to the log statement of type `com.google.cloud.logging.TraceCont
 Trace id should be of the format: `projects/<project-id>/traces/<trace_id>` where `project-id` is the gcp project id and
 `trace_id` is the 16-character hexadecimal encoding of the trace id. Similarly for the `<span-id>`.
 
+## Adding http request context (since 1.1.8)
+
+Add an argument to the log statement of type `com.google.cloud.logging.HttpRequestContext` to provide the `httpRequest` fields.
+This field will be emitted as the `httpRequest` field in the output.
+
+## Source location (since 1.1.9)
+
+The source location is now populated as the `logging.googleapis.com/sourceLocation` field when available.
+
 ## TODO
 
 * [x] Update in readme

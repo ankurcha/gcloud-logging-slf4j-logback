@@ -17,10 +17,10 @@ package com.google.cloud.logging;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.pattern.ThrowableProxyConverter;
+import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.contrib.json.JsonLayoutBase;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,8 +30,9 @@ import java.util.Map;
  * Google cloud logging v2 json layout
  */
 public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
-    private static final String TRACE_ID_FIELD_KEY = "logging.googleapis.com/trace";
-    private static final String SPAN_ID_FIELD_KEY = "logging.googleapis.com/spanId";
+    private static final String TRACE_ID_FIELD_KEY        = "logging.googleapis.com/trace";
+    private static final String SPAN_ID_FIELD_KEY         = "logging.googleapis.com/spanId";
+    private static final String SOURCE_LOCATION_FIELD_KEY = "logging.googleapis.com/sourceLocation";
 
     private final ThrowableProxyConverter tpc;
     private String serviceName;
@@ -138,16 +139,21 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
             }
         }
 
-        Map<String, Object> context = getContext(event);
-        if (!context.isEmpty()) {
-            builder.put("context", context);
+        Map<String, Object> sourceLocation = getSourceLocation(event);
+        if (sourceLocation != null && !sourceLocation.isEmpty()) {
+            builder.put(SOURCE_LOCATION_FIELD_KEY, sourceLocation);
         }
+
+        builder.put("thread", event.getThreadName());
+        builder.put("logger", event.getLoggerName());
+
         return builder;
     }
 
     private Map<String, String> _serviceContext;
+
     Map<String, String> getServiceContext() {
-        if(_serviceContext == null) {
+        if (_serviceContext == null) {
             Map<String, String> serviceContext = new HashMap<>(2);
             serviceContext.put("service", serviceName);
             serviceContext.put("version", serviceVersion);
@@ -167,26 +173,25 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
         return message;
     }
 
-    static Map<String, Object> getContext(ILoggingEvent event) {
-        Map<String, Object> context = new HashMap<>();
-        Map<String, Object> reportLocation = getReportLocation(event);
-        if (!reportLocation.isEmpty()) {
-            context.put("reportLocation", reportLocation);
-        }
-        return context;
-    }
+    static Map<String, Object> getSourceLocation(ILoggingEvent event) {
+        StackTraceElement[] cda = event.getCallerData();
+        Map<String, Object> sourceLocation = new HashMap<>();
+        if (cda != null && cda.length > 0) {
+            StackTraceElement ste = cda[0];
 
-    static Map<String, Object> getReportLocation(ILoggingEvent event) {
-        Map<String, Object> reportLocation = new HashMap<>();
-        StackTraceElement callerData = event.getCallerData()[0];
-        if (callerData != null) {
-            reportLocation.put("filePath", callerData.getClassName().replace('.', '/') + ".class");
-            reportLocation.put("lineNumber", callerData.getLineNumber());
-            reportLocation.put("functionName", callerData.getClassName() + "." + callerData.getMethodName());
+            sourceLocation.put("function", ste.getClassName() + "." + ste.getMethodName() + (ste.isNativeMethod() ? "(Native Method)" : ""));
+            if (ste.getFileName() != null) {
+                String pkg = ste.getClassName().replaceAll("\\.", "/");
+                pkg = pkg.substring(0, pkg.lastIndexOf("/") + 1);
+                sourceLocation.put("file", pkg + ste.getFileName());
+            }
+            sourceLocation.put("line", ste.getLineNumber());
+        } else {
+            sourceLocation.put("file", CallerData.NA);
+            sourceLocation.put("line", CallerData.LINE_NA);
+            sourceLocation.put("function", CallerData.NA);
         }
-        reportLocation.put("thread", event.getThreadName());
-        reportLocation.put("logger", event.getLoggerName());
-        return reportLocation;
+        return sourceLocation;
     }
 
     static Map<String, Object> getTime(ILoggingEvent event) {
