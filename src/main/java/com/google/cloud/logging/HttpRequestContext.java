@@ -20,7 +20,7 @@ public class HttpRequestContext {
         this();
         if (request != null) {
             put("requestMethod", request.getMethod());
-            put("requestUrl", request.getRequestURL().toString());
+            put("requestUrl", getRequestUrl(request));
             put("requestSize", String.valueOf(request.getContentLengthLong()));
             put("userAgent", request.getHeader("user-agent"));
             put("remoteIp", request.getHeader("X-Forwarded-For"));
@@ -59,5 +59,33 @@ public class HttpRequestContext {
 
     public Map<String, Object> getFields() {
         return fields;
+    }
+
+    /**
+     * <p>A faster replacement for {@link HttpServletRequest#getRequestURL()}
+     * 	(returns a {@link String} instead of a {@link StringBuffer} - and internally uses a {@link StringBuilder})
+     * 	that also includes the {@linkplain HttpServletRequest#getQueryString() query string}.</p>
+     * <p><a href="https://gist.github.com/ziesemer/700376d8da8c60585438">https://gist.github.com/ziesemer/700376d8da8c60585438</a></p>
+     * @author Mark A. Ziesemer
+     * 	<a href="http://www.ziesemer.com.">&lt;www.ziesemer.com&gt;</a>
+     */
+    private static String getRequestUrl(final HttpServletRequest req) {
+        final String scheme = req.getScheme();
+        final int port = req.getServerPort();
+        final StringBuilder url = new StringBuilder(256);
+        url.append(scheme);
+        url.append("://");
+        url.append(req.getServerName());
+        if (!(("http".equals(scheme) && (port == 0 || port == 80)) || ("https".equals(scheme) && port == 443))) {
+            url.append(':');
+            url.append(port);
+        }
+        url.append(req.getRequestURI());
+        final String qs = req.getQueryString();
+        if (qs != null) {
+            url.append('?');
+            url.append(qs);
+        }
+        return url.toString();
     }
 }
