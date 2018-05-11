@@ -139,6 +139,10 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
             }
         }
 
+        if (event.getMDCPropertyMap() != null && !event.getMDCPropertyMap().isEmpty()) {
+            builder.put("details", event.getMDCPropertyMap());
+        }
+
         Map<String, Object> sourceLocation = getSourceLocation(event);
         if (sourceLocation != null && !sourceLocation.isEmpty()) {
             builder.put(SOURCE_LOCATION_FIELD_KEY, sourceLocation);
