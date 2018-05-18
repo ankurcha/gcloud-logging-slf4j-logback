@@ -112,13 +112,15 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
             TraceContext traceCtx = null;
             HttpRequestContext reqCtx = null;
 
-            for (Object arg : event.getArgumentArray()) {
-                if (arg instanceof TraceContext) {
-                    traceCtx = (TraceContext) arg;
-                }
+            if (event.getArgumentArray() != null) {
+                for (Object arg : event.getArgumentArray()) {
+                    if (arg instanceof TraceContext) {
+                        traceCtx = (TraceContext) arg;
+                    }
 
-                if (arg instanceof HttpRequestContext) {
-                    reqCtx = (HttpRequestContext) arg;
+                    if (arg instanceof HttpRequestContext) {
+                        reqCtx = (HttpRequestContext) arg;
+                    }
                 }
             }
 
