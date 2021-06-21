@@ -121,6 +121,13 @@ public class GoogleCloudLoggingV2Layout extends JsonLayoutBase<ILoggingEvent> {
                     if (arg instanceof HttpRequestContext) {
                         reqCtx = (HttpRequestContext) arg;
                     }
+
+                    if (arg instanceof CustomAttributes) {
+                        Map<String, Object> attributes = ((CustomAttributes) arg).getAttributes();
+                        if (attributes != null) {
+                            builder.putAll(attributes);
+                        }
+                    }
                 }
             }
 
